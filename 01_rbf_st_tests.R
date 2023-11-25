@@ -20,7 +20,26 @@ df <- read.csv("./data/synthetic_50000.csv")
 a = seq(0, 1, length.out = 100)
 s_test = expand.grid(data.frame(x = a, y = a))
 
+## Normalized time
 s = df$t / max(df$t)
+
+## Time slices (?)
+t = c(250, 350, 450) / 500
+s_t = rep(t, each = nrow(s_test))
+
+## time basis 
+num_basis = c(70,250,410)
+std_arr = c(0.2,0.09,0.009)
+#std_arr = [0.3,0.15,0.05]
+
+mu_knots = NULL
+for (i in 1:length(num_basis)) {
+  mu_knots[[i]] = seq(0,1, num_basis[i])
+  print(i)
+}
+
+mu_knots = [np.linspace(0,1,int(i)) for i in num_basis]
+
 
 stop()
 grid <- st_read("./data/coarse_grid_pts/grid_pts_coarse.shp")
