@@ -74,13 +74,20 @@ plot(x, phi(x), type = 'l', lwd = 1.5)
 lines(x, S, lty = 2, col = 2, lwd = 1.5)
 points(X, d, pch = 16)
 
-## Plot the weighted gaussians
-mG <- matrix(NA, nrow = length(x), ncol = length(m))
+## Plot the non-weighted gaussians
+nG <- matrix(NA, nrow = length(x), ncol = length(m))
 for (i in 1:length(m)) {
-  mG[ ,i] = m[i] * gaussian(x, X[i], L)
+  nG[ ,i] = gaussian(x, X[i], L)
 }
-matplot(x, mG, type = 'l', col = 'gray')
+matplot(x, nG, type = 'l', col = 'gray')
+
+## Plot the weighted gaussians
+wG <- matrix(NA, nrow = length(x), ncol = length(m))
+for (i in 1:length(m)) {
+  wG[ ,i] = m[i] * gaussian(x, X[i], L)
+}
+matplot(x, wG, type = 'l', col = 'gray')
 
 ## And just to show the effect - this is the sum of these weighted kernels 
 ## i.e. the prediction
-plot(x, apply(mG, 1, sum), type = 'l')
+plot(x, apply(wG, 1, sum), type = 'l')
