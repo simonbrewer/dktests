@@ -70,5 +70,17 @@ S = rbf_predict(x, X, m, L)
 
 
 ## Prediction plot
+plot(x, phi(x), type = 'l', lwd = 1.5)
+lines(x, S, lty = 2, col = 2, lwd = 1.5)
+points(X, d, pch = 16)
 
-plot(S)
+## Plot the weighted gaussians
+mG <- matrix(NA, nrow = length(x), ncol = length(m))
+for (i in 1:length(m)) {
+  mG[ ,i] = m[i] * gaussian(x, X[i], L)
+}
+matplot(x, mG, type = 'l', col = 'gray')
+
+## And just to show the effect - this is the sum of these weighted kernels 
+## i.e. the prediction
+plot(x, apply(mG, 1, sum), type = 'l')
