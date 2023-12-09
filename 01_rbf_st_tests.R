@@ -1,5 +1,9 @@
 library(sf)
 
+mynorm = function(x) {
+  return(sqrt(sum(x^2)))
+}
+
 ## ------------------------------------
 ## Code to make csv file
 # df <- read.table("data/LOC_50000_univariate_spacetime_matern_stationary_1",
@@ -44,7 +48,8 @@ for (i in 1:length(num_basis)) {
   print(i)
 }
 
-## Temporal basis functions
+## -------------------------
+## Temporal basis functions (Gaussian)
 phi_t = matrix(0, nrow = N, ncol = sum(num_basis))
 K = 0
 
@@ -52,7 +57,6 @@ for (k in 1:length(num_basis)) {
   print(paste(k, num_basis[k]))
   std = std_arr[k]
   for (i in 1:num_basis[k]) {
-    print(i)
     d = (abs(s - mu_knots[[k]][i]))^2
     for (j in 1:length(d)) {
       if (d[j] >= 0 & d[j] <= 1) {
@@ -62,5 +66,45 @@ for (k in 1:length(num_basis)) {
       }
     }
   }
-  stop()
 }
+
+
+## -------------------------
+## Spatial basis functions (Wendland)
+s = df[, c("x", "y")]
+
+s = rbind(s, s_test, s_test, s_test)
+
+num_basis = c(5**2,9**2,11**2)
+
+knots_1d = list()
+for (i in 1:length(num_basis)) {
+  print(num_basis[i])
+  print(seq(0, 1, length.out = sqrt(num_basis[i])))
+  knots_1d[[i]] = seq(0, 1, length.out = sqrt(num_basis[i]))
+}
+
+K = 0
+phi = matrix(0, nrow = N, ncol = sum(num_basis))
+
+for (k in 1:length(num_basis)) {
+  print(paste(k, num_basis[k]))
+  theta = 1/sqrt(num_basis[k])*2.5
+  print(theta)
+  knots = expand.grid(data.frame(x = knots_1d[[k]],
+                                 y = knots_1d[[k]]))
+  print(knots)
+  
+  for (j in 1:num_basis[i]) {
+    ## Knot distances
+    d = cbind(s[,1] - knots[j, 1], s[,2] - knots[j, 2]) / theta
+    d = apply(d, 1, mynorm)
+    stop()
+    
+  }
+  
+  # knots_s1, knots_s2 = np.meshgrid(knots_1d[res],knots_1d[res])
+  # knots = np.column_stack((knots_s1.flatten(),knots_s2.flatten()))
+  
+}
+  
