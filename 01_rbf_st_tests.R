@@ -41,7 +41,7 @@ num_basis = c(70,250,410)
 std_arr = c(0.2,0.09,0.009)
 #std_arr = [0.3,0.15,0.05]
 
-## Make up knots (same res in space and time?)
+## Make up knots 
 mu_knots = NULL
 for (i in 1:length(num_basis)) {
   mu_knots[[i]] = seq(0,1, length.out = num_basis[i])
@@ -50,6 +50,32 @@ for (i in 1:length(num_basis)) {
 
 ## -------------------------
 ## Temporal basis functions (Gaussian)
+i = 1
+K = 0
+k = 1
+
+## Begin test code
+# d = (abs(s - mu_knots[[k]][i]))^2
+# plot(d, type = 'l')
+# 
+# phi_t = matrix(0, nrow = N, ncol = sum(num_basis))
+# 
+# std = std_arr[k]
+# for (i in 1:num_basis[k]) {
+#   d = (abs(s - mu_knots[[k]][i]))^2
+#   for (j in 1:length(d)) {
+#     if (d[j] >= 0 & d[j] <= 1) {
+#       phi_t[j, i + K] = exp(-0.5 * d[j] / std^2)
+#     } else {
+#       phi_t[j, i + K] = 0
+#     }
+#   }
+# }
+# 
+# plot(phi_t[, 1], type = 'l')
+## End test code
+
+## Full matrix starts here
 phi_t = matrix(0, nrow = N, ncol = sum(num_basis))
 K = 0
 
@@ -66,8 +92,8 @@ for (k in 1:length(num_basis)) {
       }
     }
   }
+  K = K + num_basis[k]
 }
-
 
 ## -------------------------
 ## Spatial basis functions (Wendland)
@@ -97,8 +123,9 @@ for (k in 1:length(num_basis)) {
   
   for (j in 1:num_basis[i]) {
     ## Knot distances
-    d = cbind(s[,1] - knots[j, 1], s[,2] - knots[j, 2]) / theta
+    d = cbind(s[,1] - knots[j, 1], s[,2] - knots[j, 2])
     d = apply(d, 1, mynorm)
+    d = d / theta
     stop()
     
   }
@@ -107,4 +134,4 @@ for (k in 1:length(num_basis)) {
   # knots = np.column_stack((knots_s1.flatten(),knots_s2.flatten()))
   
 }
-  
+
