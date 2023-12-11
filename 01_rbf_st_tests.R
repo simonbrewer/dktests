@@ -178,3 +178,20 @@ tmp <- df %>% slice(myloc)
 ggplot(knots, aes(x = x, y = y)) +
   geom_raster(aes(fill = phi)) +
   geom_point(data = tmp, aes(x = x, y = y))
+
+## -----------------------------------------------
+## Combine and reduce basis functions
+phi2 = cbind(phi_t, phi)
+
+idx = apply(phi2, 2, sum)
+idx = which(idx == 0)
+if (length(idx) > 0) {
+  phi_reduce = phi2[, -idx] 
+} else {
+  phi_reduce = phi2
+}
+
+phi_reduce_train = phi_reduce[1:N_data,]
+phi_reduce_test = phi_reduce[(N_data+1):nrow(phi_reduce),]
+dim(phi_reduce_train)
+dim(phi_reduce_test)
