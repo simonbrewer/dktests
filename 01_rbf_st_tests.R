@@ -121,17 +121,19 @@ for (k in 1:length(num_basis)) {
                                  y = knots_1d[[k]]))
   print(knots)
   
-  for (j in 1:num_basis[i]) {
+  for (i in 1:num_basis[k]) {
     ## Knot distances
-    d = cbind(s[,1] - knots[j, 1], s[,2] - knots[j, 2])
+    d = cbind(s[,1] - knots[i, 1], s[,2] - knots[i, 2])
     d = apply(d, 1, mynorm)
     d = d / theta
-    stop()
-    
+    for (j in 1:length(d)) {
+      if (d[j] >= 0 & d[j] <= 1) {
+        phi[j,i + K] = (1-d[j])**6 * (35 * d[j]**2 + 18 * d[j] + 3)/3
+      } else {
+        phi[j,i + K] = 0
+      }
+    }
   }
-  
-  # knots_s1, knots_s2 = np.meshgrid(knots_1d[res],knots_1d[res])
-  # knots = np.column_stack((knots_s1.flatten(),knots_s2.flatten()))
-  
+  K = K + num_basis[k]
 }
 
